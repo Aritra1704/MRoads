@@ -25,6 +25,7 @@ import java.util.Set;
 public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.ParentViewHolder> {
     private Context context;
     private ArrayList<String> arrFlight = new ArrayList<>();
+    boolean focusEnabled = false;
 
     public FlightAdapter(Context context, ArrayList<String> arrFlight) {
         this.context = context;
@@ -48,24 +49,32 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.ParentView
 
     @Override
     public void onBindViewHolder(final ParentViewHolder holder, final int position) {
-//        final String objGeoFenceLocDO = arrFlight.get(position);
-//        holder.edtDest.setText(objGeoFenceLocDO);
+        if(!focusEnabled) {
+            String flight = arrFlight.get(position);
+            holder.edtDest.setText(flight);
+        }
 
-        holder.edtDest.addTextChangedListener(new TextWatcher() {
+        holder.edtDest.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void onFocusChange(View v, boolean hasFocus) {
+                holder.edtDest.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(arrFlight.size() < (position + 1))
-                    arrFlight.add(s.toString());
-                else
-                    arrFlight.set(position, s.toString());
-            }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        focusEnabled = true;
+                        if(arrFlight.size() < (position + 1))
+                            arrFlight.add(s.toString());
+                        else
+                            arrFlight.set(position, s.toString());
+                    }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
             }
         });
     }

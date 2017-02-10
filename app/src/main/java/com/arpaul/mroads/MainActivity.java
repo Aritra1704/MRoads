@@ -47,7 +47,12 @@ public class MainActivity extends AppCompatActivity {
 //            isFlight = "No Flights Found";
 //        edtDest.setText(isFlight);
 
-        arrFlights.add("");
+        //Dummy data
+        arrFlights.add("AA1111/ATL/DAL/HOU");
+        arrFlights.add("AA2222/TPA/ATL/HOU/ORD");
+        arrFlights.add("AA3333/DAL/ORD/MSP/HOU");
+
+//        arrFlights.add("");
         adapter.refresh(arrFlights);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
