@@ -4,68 +4,109 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.arpaul.mroads.adapter.FlightAdapter;
 import com.example.VerifyFlights;
 
 import java.util.ArrayList;
+import java.util.jar.Manifest;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView tvShow;
-    ArrayList<String> arrFlights = new ArrayList<>();
+    private EditText edtDest;
+    private RecyclerView rvFlights;
+    private Toolbar toolbar;
+    private FloatingActionButton fab;
+    private Button btnVerify;
+
+    private ArrayList<String> arrFlights = new ArrayList<>();
+    private FlightAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        arrFlights.add("AA1111/ATL/DAL/HOU");
-        arrFlights.add("AA2222/TPA/ATL/HOU/ORD");
-        arrFlights.add("AA3333/DAL/ORD/MSP/HOU");
+        initializeControls();
 
-        String isFlight = VerifyFlights.checkFlight(arrFlights, "ORD-MSP");
+//        arrFlights.add("AA1111/ATL/DAL/HOU");
+//        arrFlights.add("AA2222/TPA/ATL/HOU/ORD");
+//        arrFlights.add("AA3333/DAL/ORD/MSP/HOU");
+//        String isFlight = VerifyFlights.checkFlight(arrFlights, "ORD-MSP");
+//        if(TextUtils.isEmpty(isFlight))
+//            isFlight = "No Flights Found";
+//        edtDest.setText(isFlight);
 
-        tvShow = (TextView) findViewById(R.id.tvShow);
-        if(TextUtils.isEmpty(isFlight))
-            isFlight = "No Flights Found";
-        tvShow.setText(isFlight);
+        B objB = new B();
+        fn1(objB);
+//        objB = new B();
+        fn2(objB);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        arrFlights.add("");
+        adapter.refresh(arrFlights);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                arrFlights.add("");
+                adapter.refresh(arrFlights);
+            }
+        });
+
+        btnVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String verify = edtDest.getText().toString();
+                if(!TextUtils.isEmpty(verify)) {
+                    if(adapter != null) {
+                        ArrayList<String> arrFlights = adapter.getFlights();
+                        String isFlight =  VerifyFlights.checkFlight(arrFlights, verify);
+
+                        Toast.makeText(MainActivity.this, isFlight, Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Text box empty.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    void fn1(B b) {
+//        b = new B();
+        b.x = 10;
+        b.y = 20;
+        b.z = b.x + b.y;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    void fn2(B b) {
+        System.out.println("b.z = " + b.z);
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    static class B {
+        int x,y,z;
+    }
 
-        return super.onOptionsItemSelected(item);
+    void initializeControls() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        edtDest = (EditText) findViewById(R.id.edtDest);
+
+        rvFlights = (RecyclerView) findViewById(R.id.rvFlights);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        btnVerify = (Button) findViewById(R.id.btnVerify);
+
+        adapter = new FlightAdapter(this, new ArrayList<String>());
+        rvFlights.setAdapter(adapter);
     }
 }
