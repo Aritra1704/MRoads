@@ -47,11 +47,6 @@ public class MainActivity extends AppCompatActivity {
 //            isFlight = "No Flights Found";
 //        edtDest.setText(isFlight);
 
-        B objB = new B();
-        fn1(objB);
-//        objB = new B();
-        fn2(objB);
-
         arrFlights.add("");
         adapter.refresh(arrFlights);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<String> arrFlights = adapter.getFlights();
                         String isFlight =  VerifyFlights.checkFlight(arrFlights, verify);
 
+                        if(TextUtils.isEmpty(isFlight))
+                            isFlight = "No Flights Found";
+
                         Toast.makeText(MainActivity.this, isFlight, Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -78,21 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    void fn1(B b) {
-//        b = new B();
-        b.x = 10;
-        b.y = 20;
-        b.z = b.x + b.y;
-    }
-
-    void fn2(B b) {
-        System.out.println("b.z = " + b.z);
-    }
-
-    static class B {
-        int x,y,z;
     }
 
     void initializeControls() {
